@@ -10,9 +10,10 @@
 // Main Application Entry Point
 $(document).ready(function () {
     // define main variables
-    var dataAdapter, grid = $('#grid'), initrowdetails, source;
+    var dataAdapter, grid = $('#grid'), initrowdetails, source, toggleArray = [];
 
-    // prepare the data source and adapter
+    /* data connection */
+    // main datasource
     source = {
         cache: false,
         datatype: 'json',
@@ -51,18 +52,20 @@ $(document).ready(function () {
           if (data != null) {
             source.totalrecords = data[0].TotalRows;
 
-            // set the data freshness date
+            // set the freshness date
             $('div#updated').html('Updated: ' + data[0].Rows[0].Updated);
           }
         }
     };
+
+    // data renderer
     dataAdapter = new $.jqx.dataAdapter(source, {
       loadError: function(xhr, status, error) {
         alert(error);
       }
     });
 
-    // row details
+    // row details renderer
     initrowdetails = function (index, parentElement, gridElement, datarecord) {
         var description, detailDiv = $($(parentElement).children()[0]), gobutton, grains, hops, information, leftcolumn, rightcolumn;
 
@@ -76,7 +79,7 @@ $(document).ready(function () {
             information.append(leftcolumn);
             information.append(rightcolumn);
 
-            // now set up the content
+            /* now set up the content */
             // left column
             description = "<div style='margin: 10px; word-wrap: break-word; white-space: pre-wrap'><b>Description:</b> " + datarecord.Description + "</div>";
 
@@ -85,9 +88,11 @@ $(document).ready(function () {
             hops = "<div style='margin: 10px; word-wrap: break-word; white-space: pre-wrap'><b>Hops:</b> " + datarecord.Hops + "</div>";
             gobutton = "<div style='margin: 10px;'><a class='goto' target='_blank' href='" + datarecord.URL + "'>Open in BrewMarketplace</a></div>";
 
-            // and append them to their appropriate columns
+            /* and append them to their appropriate columns */
+            // left column
             leftcolumn.append(description);
 
+            // right column
             // only append these columns if they have data in them
             if (datarecord.Grains.length) {
               rightcolumn.append(grains);
@@ -99,7 +104,7 @@ $(document).ready(function () {
             // always append the link button
             rightcolumn.append(gobutton);
 
-            // put some style on the link
+            // give the link some style
             $('a.goto').jqxLinkButton({
               theme: 'dark',
               height: 30,
@@ -108,48 +113,63 @@ $(document).ready(function () {
         }
     }
 
-    // main grid
-    grid.jqxGrid(
-    {
-        autoheight: true,
-        width: '98%',
-        autoloadstate: true,
-        autosavestate: true,
-        filterable: true,
-        sortable: true,
-        pageable: true,
-        pagesize: 20,
-        pagesizeoptions: ['10', '20', '50', '100'],
-        rowdetails: true,
-        rowdetailstemplate: { rowdetails: "<div style='margin: 10px;'><div class='information'></div></div>", rowdetailsheight: 200 },
-        virtualmode: true,
-        rendergridrows: function(obj) {
-           return obj.data;
-        },
-        source: dataAdapter,
-        theme: 'dark',
-        columnsreorder: true,
-        columnsresize: true,
-        columns: [
-          { text: 'Name', dataField: 'Name', minwidth: 220 },
-          { text: 'Brewery', dataField: 'Brewery', width: 220 },
-          { text: 'Style', dataField: 'Style', minwidth: 200 },
-          { text: 'ABV', dataField: 'ABV', cellsalign: 'center', width: 70, cellsformat: 'p' },
-          { text: 'IBU', dataField: 'IBU', cellsalign: 'center', width: 70 },
-          { text: 'SRM', dataField: 'SRM', cellsalign: 'center', width: 70 },
-          { text: 'Price', dataField: 'Price', width: 90, cellsformat: 'c2' },
-          { text: 'Rating', dataField: 'Rating', width: 60 },
-          { text: 'Reviews', dataField: 'Reviews', cellsalign: 'center', width: 70 }
-        ]
+    /* main grid setup */
+    grid.jqxGrid({
+      autoheight: true,
+      width: '98%',
+      autoloadstate: true,
+      autosavestate: true,
+      filterable: true,
+      sortable: true,
+      pageable: true,
+      pagesize: 20,
+      pagesizeoptions: ['10', '20', '50', '100'],
+      rowdetails: true,
+      rowdetailstemplate: { rowdetails: "<div style='margin: 10px;'><div class='information'></div></div>", rowdetailsheight: 200 },
+      virtualmode: true,
+      rendergridrows: function(obj) {
+         return obj.data;
+      },
+      source: dataAdapter,
+      theme: 'dark',
+      columnsreorder: true,
+      columnsresize: true,
+      columns: [
+        { text: 'Name', dataField: 'Name', minwidth: 220 },
+        { text: 'Brewery', dataField: 'Brewery', width: 220 },
+        { text: 'Style', dataField: 'Style', minwidth: 200 },
+        { text: 'ABV', dataField: 'ABV', cellsalign: 'center', width: 70, cellsformat: 'p' },
+        { text: 'IBU', dataField: 'IBU', cellsalign: 'center', width: 70 },
+        { text: 'SRM', dataField: 'SRM', cellsalign: 'center', width: 70 },
+        { text: 'Price', dataField: 'Price', width: 90, cellsformat: 'c2' },
+        { text: 'Rating', dataField: 'Rating', width: 60 },
+        { text: 'Reviews', dataField: 'Reviews', cellsalign: 'center', width: 70 }
+      ]
     });
 
-    // event handlers
+    // track rowdetails state for rowdoubleclick toggle
+    for (var i = 0; i < dataAdapter.pagesize; i += 1) {
+      toggleArray.push(false);
+    }
+
+    /* event handlers */
     grid.on('bindingcomplete', function (event) {
+      // add rowdetails after data is bound to prevent errors
       $(this).jqxGrid({ initrowdetails: initrowdetails });
+      // force grid render to make sure details are stay in sync
       $(this).jqxGrid('render');
     });
 
     grid.on('rowdoubleclick', function (event) {
-      $(this).jqxGrid('showrowdetails', event.args.rowindex);
+      var index = event.args.rowindex;
+
+      // toggle rowdetails with doubleclick
+      if (toggleArray[index] == true) {
+        grid.jqxGrid('hiderowdetails', index);
+        toggleArray[index] = false;
+      } else {
+        grid.jqxGrid('showrowdetails', index);
+        toggleArray[index] = true;
+      }
     });
 });
