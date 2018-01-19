@@ -2,7 +2,7 @@
   /*
   *  Application: PicoBrew PicoPaks
   *  Filename: connect.php
-  *  $Revision: 1 $
+  *  $Revision: 1.1.0 $
   *  $LastChangedBy: Chris Chain $
   *  $LastChangedDate: 01/16/18 $
   *  Description: This file provides the connection string for the MySQL Database
