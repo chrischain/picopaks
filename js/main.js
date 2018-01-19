@@ -1,7 +1,7 @@
 /*
 *  Application: PicoBrew PicoPaks
 *  Filename: main.js
-*  $Revision: 1.1.0 $
+*  $Revision: 1.1.1 $
 *  $LastChangedBy: Chris Chain $
 *  $LastChangedDate: 01/16/18 $
 *  Description: This is the main JavaScript file that configures the grid and data connector
