@@ -123,15 +123,15 @@ $(document).ready(function () {
       columnsreorder: true,
       columnsresize: true,
       columns: [
-        { text: 'Name', dataField: 'Name', minwidth: 220 },
+        { text: 'Name', dataField: 'Name', groupable: false, minwidth: 220 },
         { text: 'Brewery', dataField: 'Brewery', width: 220 },
         { text: 'Style', dataField: 'Style', minwidth: 200 },
-        { text: 'ABV', dataField: 'ABV', cellsalign: 'center', width: 70, cellsformat: 'p' },
-        { text: 'IBU', dataField: 'IBU', cellsalign: 'center', width: 70 },
-        { text: 'SRM', dataField: 'SRM', cellsalign: 'center', width: 70 },
-        { text: 'Price', dataField: 'Price', width: 90, cellsformat: 'c2' },
+        { text: 'ABV', dataField: 'ABV', cellsalign: 'center', cellsformat: 'p', width: 70 },
+        { text: 'IBU', dataField: 'IBU', cellsalign: 'center', groupable: false, width: 70 },
+        { text: 'SRM', dataField: 'SRM', cellsalign: 'center', groupable: false, width: 70 },
+        { text: 'Price', dataField: 'Price', cellsformat: 'c2', width: 90 },
         { text: 'Rating', dataField: 'Rating', width: 60 },
-        { text: 'Reviews', dataField: 'Reviews', cellsalign: 'center', width: 70 }
+        { text: 'Reviews', dataField: 'Reviews', cellsalign: 'center', groupable: false, width: 70 }
       ]
     });
 
