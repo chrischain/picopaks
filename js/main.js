@@ -107,6 +107,7 @@ $(document).ready(function () {
       autoloadstate: true,
       autosavestate: true,
       filterable: true,
+      groupable: true,
       initrowdetails: initrowdetails,
       sortable: true,
       pageable: true,
@@ -151,5 +152,14 @@ $(document).ready(function () {
         grid.jqxGrid('showrowdetails', index);
         toggleArray[index] = true;
       }
+    });
+
+    // download Excel button
+    $('#download').jqxButton({
+      height: 26,
+      width: 80,
+      theme: 'dark'
+    }).click(function() {
+      window.open('PicoBrew_Beer_List.xlsx');
     });
 });
