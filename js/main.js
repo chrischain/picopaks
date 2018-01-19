@@ -15,7 +15,6 @@ $(document).ready(function () {
     /* data connection */
     // main datasource
     source = {
-        cache: false,
         datatype: 'json',
         datafields: [
             { name: 'Name' },
@@ -36,18 +35,6 @@ $(document).ready(function () {
         id: 'id',
         url: 'data/data.php',
         root: 'Rows',
-        filter: function() {
-          // update the grid and send a request to the server.
-          if (grid.jqxGrid('isBindingCompleted')) {
-            grid.jqxGrid('updatebounddata', 'filter');
-          }
-        },
-        sort: function() {
-          // update the grid and send a request to the server.
-          if (grid.jqxGrid('isBindingCompleted')) {
-            grid.jqxGrid('updatebounddata', 'sort');
-          }
-        },
         beforeprocessing: function(data) {
           if (data != null) {
             source.totalrecords = data[0].TotalRows;
@@ -120,13 +107,13 @@ $(document).ready(function () {
       autoloadstate: true,
       autosavestate: true,
       filterable: true,
+      initrowdetails: initrowdetails,
       sortable: true,
       pageable: true,
       pagesize: 20,
       pagesizeoptions: ['10', '20', '50', '100'],
       rowdetails: true,
       rowdetailstemplate: { rowdetails: "<div style='margin: 10px;'><div class='information'></div></div>", rowdetailsheight: 200 },
-      virtualmode: true,
       rendergridrows: function(obj) {
          return obj.data;
       },
@@ -152,14 +139,7 @@ $(document).ready(function () {
       toggleArray.push(false);
     }
 
-    /* event handlers */
-    grid.on('bindingcomplete', function (event) {
-      // add rowdetails after data is bound to prevent errors
-      $(this).jqxGrid({ initrowdetails: initrowdetails });
-      // force grid render to make sure details are stay in sync
-      $(this).jqxGrid('render');
-    });
-
+    // doubleclick event handler
     grid.on('rowdoubleclick', function (event) {
       var index = event.args.rowindex;
 
