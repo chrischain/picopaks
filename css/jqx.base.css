@@ -5946,6 +5946,7 @@ ol li .jqx-listmenu-item-label:before
     display: none;
     background-color: transparent;
     z-index: 8999;
+    pointer-events: none;
 }
 .jqx-layout-ribbon-header-ltr
 {
